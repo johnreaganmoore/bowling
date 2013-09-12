@@ -16,8 +16,14 @@ describe BowlingGame do
     it 'scores the game as 0 when only gutter balls are thrown' do
       game = BowlingGame.new
       20.times { game.roll(0) }
-      
+
       expect(game.score).to eq(0)
+    end
+    it 'scores the game as 20 when one pin in knocked down on each roll' do
+      game = BowlingGame.new
+      20.times { game.roll(1) }
+
+      expect(game.score).to eq(20)
     end
   end
 end
