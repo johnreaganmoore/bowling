@@ -3,45 +3,67 @@ class BowlingGame
 
   def initialize
     @rolls = []
+    @total_score  = 0
+    @current_roll = 0
   end
 
-# Record a roll in the game.
-#
-# pins - The Integer number of pins knocked down in this roll.
-#
-# Returns nothing.
-
+  # Record a roll in the game.
+  #
+  # pins - The Integer number of pins knocked down in this roll.
+  #
+  # Returns nothing.
   def roll(pins)
     @rolls.push(pins)
   end
 
-# Returns the Integer score for this game.
-
+  # Returns the Integer score for this game.
   def score
-    #@rolls.reduce(:+)
+    while playing?
+      init_roll
 
-    total_score = 0
-    current_roll = 0
-
-    while current_roll < @rolls.size - 1
-      roll = @rolls[current_roll]
-      next_roll = @rolls[current_roll + 1]
-
-      if roll == 10                                    #if strike
-        total_score += 10 + @rolls[current_roll + 1] + @rolls[current_roll + 2]
-        current_roll += 1
-
-      elsif roll + next_roll == 10                    #if frame is a spare
-
-        total_score += 10 + @rolls[current_roll + 2]
-        current_roll += 2
-      else                                             #if frame is neither strike nor spare
-
-        total_score += roll + next_roll
-        current_roll += 2
+      if strike?
+        score_strike
+      elsif spare?
+        score_spare
+      else
+        score_normal
       end
     end
 
-    return total_score
+    return @total_score
+  end
+
+  private
+
+  def playing?
+    @current_roll < @rolls.size - 1
+  end
+
+  def init_roll
+    @roll      = @rolls[@current_roll]
+    @next_roll = @rolls[@current_roll + 1]
+  end
+
+  def strike?
+    @roll == 10
+  end
+
+  def score_strike
+    @total_score += 10 + @rolls[@current_roll + 1] + @rolls[@current_roll + 2]
+    @current_roll += 1
+  end
+
+  def spare?
+    @roll + @next_roll == 10
+  end
+
+  def score_spare
+    @total_score += 10 + @rolls[@current_roll + 2]
+    @current_roll += 2
+  end
+
+  def score_normal
+    @total_score += @roll + @next_roll
+    @current_roll += 2
   end
 end
